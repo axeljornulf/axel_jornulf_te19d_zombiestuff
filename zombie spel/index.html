@@ -4,11 +4,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://koda.nu/simple.js">
 
+        //variabel för banor, spelare, fiende m.m.
         var currentLevel = level1;
         var player = {x: 1000, y: 150, speed: 10};
         var zombies = [];
         var i = 0;
 
+        //While loopen skapar 10 st zombier runt om skärmen
         while(i < 10)
         {
             zombies.push({x: random(totalWidth), y: random(totalHeight), speed: 6});
@@ -16,49 +18,53 @@
             i += 1;
         }
 
+        //Uppdaterar banorna
         function update()
         {
             currentLevel();
         }
 
+        //Huvud menyn
         function level1()
         {
-            picture(0,0, "menu_screen.png", totalWidth, totalHeight);
+            picture(0,0, "menu_screen.png", totalWidth, totalHeight); //Meny bakgrund
             document.onkeypress = function(key_dtl) 
             {
                 currentLevel = level2;
             }
 
-            if(mouse.left || mouse.right)
+            if(mouse.left || mouse.right) //När man högerklickar eller vänsterklickar med musen, börjar första banan
             {
                 currentLevel = level2;
             }
         }
 
+        //Huvud banan
         function level2()
         {
-            clearScreen();
+            clearScreen(); //Tar bort förra bilden när en ny skapas
             
-            document.body.style.backgroundImage = "url('freelance_bg.png')";
+            document.body.style.backgroundImage = "url('freelance_bg.png')"; //Spelarens bild
 
             var i = 0;
-            while(i < 10)
+            while(i < 10) //Loop som spawnar zombierna
             {
                 var zombie = zombies[i];
-                picture(zombie.x,zombie.y, "jerma_zombie.png");
+                picture(zombie.x,zombie.y, "jerma_zombie.png"); //Zombie textur
 
+                //Vilkorer som ger rörelse till zombiernas rörelse och bestämmer hur man vinner och förlorar
                 if(zombie.x < player.x)
                 {
-                    zombie.x += zombie.speed;
+                    zombie.x += zombie.speed; //zombierna följer efter spelaren tills distansen mellan de är 0
                 }
                 else
                 {
-                    zombie.x -= zombie.speed;
+                    zombie.x -= zombie.speed; //annars sänker farten
                 }
 
                 if(zombie.y < player.y)
                 {
-                    zombie.y += zombie.speed;
+                    zombie.y += zombie.speed; //samma fast för y-axeln
                 }
                 else
                 {
@@ -67,12 +73,12 @@
 
                 if(zombie.y > totalHeight-20) 
                 {
-                    zombie.speed = -zombie.speed;
+                    zombie.speed = -zombie.speed; //ser till att zombierna inte kan gå förbi skärmens gränser
                 }
 
                 if(zombie.x > totalWidth-30)
                 {
-                    zombie.speed = -zombie.speed;
+                    zombie.speed = -zombie.speed; //samma fast för bredden av skärmen
                 }
 
                 if(zombie.y < 0)
@@ -85,7 +91,7 @@
                     zombie.speed = -zombie.speed;
                 }
 
-                if(distance(player, zombie) < 10)
+                if(distance(player, zombie) < 10) //om zombien och spelarens distans är mindre än 10, är spelet över
                 {
                     currentLevel = gameOver;
                 }
@@ -93,14 +99,15 @@
                 i += 1;
             }
 
-            function gameOver()
+            function gameOver() //funktionen som ger en sekvens när spelet är över
             {
                 picture(0,0, "gameover.png")
                 stopUpdate();
             }
 
-            picture(player.x, player.y, "nixon.png");
+            picture(player.x, player.y, "nixon.png"); //Spelarens textur
 
+            //Vilkorer som ger rörelse till spelaren och begränsningar, nästan samma som zombiernas vilkorer
             if(keyboard.w)
             {
                 player.y -= player.speed;
